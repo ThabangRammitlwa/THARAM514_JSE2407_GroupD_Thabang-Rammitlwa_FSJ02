@@ -21,7 +21,7 @@ export default async function Home({ searchParams }) {
   return (
     <div>
       <header className='py-12'>
-        <h1 className='text-3xl font-bold text-gray-900'>Family Store</h1>
+        <h1 className='text-3xl font-bold text-gray-900'></h1>
       </header>
       <Products products={ products} />
       <Pagination currentPage = {page} hasMore={products.length ===20}/>
