@@ -17,3 +17,10 @@ export async function fetchProductById(id) {
   return response.json();
 }
   
+export async function fetchCategories() {
+  const response = await fetch(`${API_BASE_URL}/categories`);
+  if (!response.ok) {
+    throw new Error('Failed to fetch product');
+  }
+  return response.json();
+}

@@ -1,31 +1,103 @@
+"use client"
+
+import { useState, useEffect } from 'react'
+import { useRouter,useSearchParams } from 'next/navigation'
 import Products from './components/productCard'
 import Pagination from './components/pagination'
-import { fetchProducts } from './api'
+import Filter from './components/filter'
+import { fetchProducts,fetchCategories } from './api'
 
-export default async function Home({ searchParams }) {
-  const page = Number(searchParams.page) || 1;
-  let products;
-  let error;
+export default function Home() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [totalPages, setTotalPages] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalProducts, setTotalProducts] = useState(0);
 
-  try {
-    products = await fetchProducts(page);
-  } catch (err) {
-    error = err.message;
-  }
-  
+
+  const page = Number(searchParams.get('page')) || 1;
+  const search = searchParams.get('search') || '';
+  const category = searchParams.get('category') || '';
+  const sortBy = searchParams.get('sortBy') || '';
+  const sortOrder = searchParams.get('sortOrder') || '';
+
+  useEffect(() => {
+    async function loadData() {
+      try {
+        setLoading(true);
+        const [productsData, categoriesData] = await Promise.all([
+          fetchProducts({ page, search, category, sortBy, sortOrder }),
+          fetchCategories()
+        ]);
+        setProducts(productsData.products);
+        setTotalPages(productsData.totalPages);
+        setCurrentPage(page);
+        setTotalProducts(productsData.totalProducts);
+        setCategories(categoriesData);
+        setError(null);
+      } catch (e) {
+        setError(e.message);
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadData();
+  }, [page, search, category, sortBy, sortOrder]);
+
+  const updateUrl = (newParams) => {
+    const updatedSearchParams = new URLSearchParams(searchParams);
+    Object.entries(newParams).forEach(([key, value]) => {
+      if (value) {
+        updatedSearchParams.set(key, value);
+      } else {
+        updatedSearchParams.delete(key);
+      }
+    });
+    router.push(`/?${updatedSearchParams.toString()}`);
+  };
+
+  const handleFilter = (newCategory) => updateUrl({ category: newCategory, page: 1 });
+  const handleSort = (newSortBy, newSortOrder) => updateUrl({ sortBy: newSortBy, sortOrder: newSortOrder, page: 1 });
+  const handleSearch = (newSearch) => updateUrl({ search: newSearch, page: 1 });
+  const handlePageChange = (newPage) => updateUrl({ page: newPage });
+  const handleReset = () => router.push('/');
+
   if (error) {
-    return <div className="text-red-500 text-center p-4">Error: {error}</div>;
+    return <div className="text-red-600 text-center p-4 bg-red-100 rounded-lg">Error: {error}</div>;
   }
 
 
   return (
     <div>
-      <header className='py-12'>
-        <h1 className='text-3xl font-bold text-gray-900'></h1>
-      </header>
+          <Filter
+        categories={categories}
+        currentCategory={category}
+        currentSortBy={sortBy}
+        currentSortOrder={sortOrder}
+        currentSearch={search}
+        onFilter={handleFilter}
+        onSort={handleSort}
+        onSearch={handleSearch}
+        onReset={handleReset}
+      />
+      {loading ? (
+        <div className="text-center p-4">Loading...</div>
+      ) : (
+        <>
       <Products products={ products} />
-      <Pagination currentPage = {page} hasMore={products.length ===20}/>
-    </div>
-  )
+      <Pagination
+      currentPage={currentPage}
+      totalPages={totalPages}
+      hasMore={products && products.length === 20}
+      onPageChange={handlePageChange}
+    />
+  </>
+)}
+</div>
+);
 }
 

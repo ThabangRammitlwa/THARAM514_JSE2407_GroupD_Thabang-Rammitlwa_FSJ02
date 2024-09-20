@@ -2,18 +2,20 @@
 
 import { useState } from "react"
 
-export default function Filter({ onCategoryChange, onSortOrderChange, categories }) {
+export default function Filter({ onFilter, onSort, categories }) {
     const [selectedCategory, setSelectedCategory] = useState('');
-    const [SortOrder, setSortOrder] = useState('asc');
+    const [sortOrder, setSortOrder] = useState('asc');
 
     const handleCategoryChange = (e) => {
-        setSelectedCategory(e.target.value);
-        onCategoryChange(e.target.value);
+        const category = e.target.value;
+        setSelectedCategory(category);
+       onFilter(category)
     };
 
     const handleSortOrderChange = (e) => {
-        setSortOrder(e.target.value);
-        onSortOrderChange(e.target.value);
+        const order =e.target.value;
+        setSortOrder(order);
+        onSort(order)
     
     };
 
@@ -25,6 +27,10 @@ export default function Filter({ onCategoryChange, onSortOrderChange, categories
                   <option key={index} value={category}>{category}</option>
                   ))}
           </select>
+          <select value={sortOrder} onChange={handleSortOrderChange} className="border border-gray-300 p-2 rounded ml-4">
+        <option value="asc">Sort by Ascending</option>
+        <option value="desc">Sort by Descending</option>
+      </select>
       
     </div>
   )
