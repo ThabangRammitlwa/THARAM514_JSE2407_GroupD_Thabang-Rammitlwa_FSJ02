@@ -1,37 +1,68 @@
 "use client"
 
-import { useState } from "react"
+import { useState,useEffect } from "react"
 
-export default function Filter({ onFilter, onSort, categories }) {
-    const [selectedCategory, setSelectedCategory] = useState('');
-    const [sortOrder, setSortOrder] = useState('asc');
+export default function Filter({
+    categories,
+    currentCategory,
+    currentSortBy,
+    currentSortOrder,
+    currentSearch,
+    onFilter,
+    onSort,
+    onSearch,
+    onReset
+}) {
+    const [search, setSearch] = useState(currentSearch);
 
-    const handleCategoryChange = (e) => {
-        const category = e.target.value;
-        setSelectedCategory(category);
-       onFilter(category)
+    useEffect(() => {
+      setSearch(currentSearch);
+    }, [currentSearch]);
+  
+    const handleSearchSubmit = (e) => {
+      e.preventDefault();
+      onSearch(search);
     };
-
-    const handleSortOrderChange = (e) => {
-        const order =e.target.value;
-        setSortOrder(order);
-        onSort(order)
-    
-    };
-
-  return (
-      <div className="flex justify-between items-center mb-6">
-          <select value={selectedCategory} onChange={handleCategoryChange} className="border border-gray-300 p-2 rounded">
-              <option value="" >All categories</option>
-              {categories && categories.map((category, index) => (
-                  <option key={index} value={category}>{category}</option>
-                  ))}
+  
+    return (
+      <div className="mb-8">
+        <form onSubmit={handleSearchSubmit} className="mb-4">
+          <input
+            type="text"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search products..."
+            className="p-2 border rounded mr-2"
+          />
+          <button type="submit" className="bg-indigo-600 text-white p-2 rounded">Search</button>
+        </form>
+        <div className="flex flex-wrap items-center gap-4">
+          <select
+            value={currentCategory}
+            onChange={(e) => onFilter(e.target.value)}
+            className="p-2 border rounded"
+          >
+            <option value="">All Categories</option>
+            {categories && categories.map((category) => (
+              <option key={category} value={category}>{category}</option>
+            ))}
           </select>
-          <select value={sortOrder} onChange={handleSortOrderChange} className="border border-gray-300 p-2 rounded ml-4">
-        <option value="asc">Sort by Ascending</option>
-        <option value="desc">Sort by Descending</option>
-      </select>
-      
-    </div>
-  )
-}
+          <select
+            value={`${currentSortBy}-${currentSortOrder}`}
+            onChange={(e) => {
+              const [sortBy, sortOrder] = e.target.value.split('-');
+              onSort(sortBy, sortOrder);
+            }}
+            className="p-2 border rounded"
+          >
+            <option value="">Price: Default</option>
+            <option value="price-asc">Price: Low to High</option>
+            <option value="price-desc">Price: High to Low</option>
+            <option value="title-asc">Title: A-Z</option>
+            <option value="title-desc">Title: Z-A</option>
+          </select>
+          <button onClick={onReset} className="bg-gray-200 p-2 rounded">Reset All</button>
+        </div>
+      </div>
+    );
+  }

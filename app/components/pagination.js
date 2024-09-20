@@ -14,6 +14,7 @@ export default function Pagination({ currentPage, hasMore }) {
           Next →
         </Link>
       )}
+      
     </div>
   );
 }

@@ -12,7 +12,7 @@ export default function ProductCard({ products }) {
 
 
   useEffect(() => {
-    if (products && products.length > 0) {
+    if (products.length > 0) {
       setLoading(false);
       const initialImageState = products.reduce((acc, product) => {
         acc[product.id] = 0;
@@ -43,7 +43,7 @@ export default function ProductCard({ products }) {
   return (
     <div className="container mx-auto px-2 sm:px-4 py-4 sm: py-8 bg-white">
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-        {products.map((item) => (
+        {products && products.map((item,index) => (
           <Link key={index} href={`/product/${item.id}?page={currentPage}`}>
             <div className="bg-white shadow-md rounded-lg overflow-hidden flex flex-col h-[300px] sm:h-[350px] md:h-[400px]">
               <div className="p-4">

@@ -5,6 +5,7 @@ import { useRouter,useSearchParams } from 'next/navigation'
 import Products from './components/productCard'
 import Pagination from './components/pagination'
 import Filter from './components/filter'
+import Header from './components/header'
 import { fetchProducts,fetchCategories } from './api'
 
 export default function Home() {
@@ -46,7 +47,7 @@ export default function Home() {
       }
     }
     loadData();
-  }, [page, search, category, sortBy, sortOrder]);
+  }, [category,page,sortBy,sortOrder,search]);
 
   const updateUrl = (newParams) => {
     const updatedSearchParams = new URLSearchParams(searchParams);
@@ -87,12 +88,13 @@ export default function Home() {
       {loading ? (
         <div className="text-center p-4">Loading...</div>
       ) : (
-        <>
+          <>
+      <Header onSearch={handleSearch}/>
       <Products products={ products} />
       <Pagination
       currentPage={currentPage}
       totalPages={totalPages}
-      hasMore={products && products.length === 20}
+      hasMore={products.length === 20}
       onPageChange={handlePageChange}
     />
   </>
