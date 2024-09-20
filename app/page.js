@@ -74,6 +74,7 @@ export default function Home() {
 
   return (
     <div>
+        <Header/>
           <Filter
         categories={categories}
         currentCategory={category}
@@ -89,7 +90,7 @@ export default function Home() {
         <div className="text-center p-4">Loading...</div>
       ) : (
           <>
-      <Header onSearch={handleSearch}/>
+    
       <Products products={ products} />
       <Pagination
       currentPage={currentPage}

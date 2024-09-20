@@ -7,35 +7,14 @@ export default function Filter({
     currentCategory,
     currentSortBy,
     currentSortOrder,
-    currentSearch,
     onFilter,
     onSort,
-    onSearch,
     onReset
 }) {
-    const [search, setSearch] = useState(currentSearch);
-
-    useEffect(() => {
-      setSearch(currentSearch);
-    }, [currentSearch]);
   
-    const handleSearchSubmit = (e) => {
-      e.preventDefault();
-      onSearch(search);
-    };
   
     return (
-      <div className="mb-8">
-        <form onSubmit={handleSearchSubmit} className="mb-4">
-          <input
-            type="text"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search products..."
-            className="p-2 border rounded mr-2"
-          />
-          <button type="submit" className="bg-indigo-600 text-white p-2 rounded">Search</button>
-        </form>
+  
         <div className="flex flex-wrap items-center gap-4">
           <select
             value={currentCategory}
@@ -61,8 +40,7 @@ export default function Filter({
             <option value="title-asc">Title: A-Z</option>
             <option value="title-desc">Title: Z-A</option>
           </select>
-          <button onClick={onReset} className="bg-gray-200 p-2 rounded">Reset All</button>
+          <button onClick={onReset} className="bg-amber-100 p-2 rounded">Reset All</button>
         </div>
-      </div>
     );
   }
