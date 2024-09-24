@@ -1,6 +1,7 @@
 "use client"
 
-import { useState ,useEffect } from 'react';
+import { useState, useEffect } from 'react';
+import Reviews from './reviews';
 
 
 
@@ -10,7 +11,8 @@ function goBack() {
 
 export function ProductDetail({ product }) {
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
-    const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
+  const [reviewSort, setReviewSort] = useState('date-desc')
 
     useEffect(() => {
         if (product) {
@@ -49,6 +51,22 @@ export function ProductDetail({ product }) {
     if (loading) {
         return <div className='text-centre p-4'>Loading...</div>;
     }
+  
+  
+    const sortedReviews = product.reviews.slice().sort((a, b) => {
+      switch (reviewSort) {
+        case 'date-desc':
+          return new Date(b.date) - new Date(a.date);
+        case 'date-asc':
+          return new Date(a.date) - new Date(b.date);
+        case 'rating-desc':
+          return b.rating - a.rating;
+        case 'rating-asc':
+          return a.rating - b.rating;
+        default:
+          return 0;
+      }
+    });
   
     return (
       <div className="py-12">
@@ -133,23 +151,18 @@ export function ProductDetail({ product }) {
           </div>
           <div className="mt-8 p-8">
             <h2 className="text-2xl font-bold mb-4 text-amber-800">Reviews</h2>
-            {product.reviews && product.reviews.length > 0 ? (
-              <div className="space-y-4">
-                {product.reviews.map((review, index) => (
-                  <div key={index} className="p-4 border rounded-lg">
-                    <p className="font-semibold">{review.reviewerName || "Anonymous"}</p>
-                    <p className="text-sm text-gray-500">{new Date(review.date).toLocaleDateString()}</p>
-                    <div className="flex items-center mt-2">
-                      {renderStars(review.rating)}
-                    </div>
-                    <p className="mt-2">{review.comment}</p>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <p className="text-gray-500">No reviews yet.</p>
-            )}
+            <select
+            value={reviewSort}
+            onChange={(e) => setReviewSort(e.target.value)}
+            className="p-2 border rounded-md shadow-sm focus:ring-amber-500 focus:border-amber-500 bg-white"
+          >
+            <option value="date-desc">Newest First</option>
+            <option value="date-asc">Oldest First</option>
+            <option value="rating-desc">Highest Rating First</option>
+            <option value="rating-asc">Lowest Rating First</option>
+          </select>
           </div>
+          <Reviews reviews={ sortedReviews} />
         </div>
       </div>
     );
