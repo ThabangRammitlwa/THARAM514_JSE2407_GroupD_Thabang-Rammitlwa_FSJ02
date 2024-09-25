@@ -127,7 +127,7 @@ export function ProductDetail({ product }) {
                 {product.tags.map((tag, index) => (
                   <span
                     key={index}
-                    className="inline-block bg-amber-100 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2"
+                    className="inline-block bg-amber-100 rounded-full px-3 py-1 text-sm font-serif text-amber-800 mr-2 mb-2"
                   >
                     {tag}
                   </span>

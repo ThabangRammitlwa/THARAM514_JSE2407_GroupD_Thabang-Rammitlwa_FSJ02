@@ -15,7 +15,7 @@ export default function Filter({
   
     return (
   
-        <div className="flex flex-wrap items-center gap-4">
+        <div className="flex flex-wrap items-center gap-4 py-6 px-6 text-amber-800 font-serif">
           <select
             value={currentCategory}
             onChange={(e) => onFilter(e.target.value)}
