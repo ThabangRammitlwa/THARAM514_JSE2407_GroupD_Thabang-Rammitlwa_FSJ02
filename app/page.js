@@ -75,17 +75,14 @@ export default function Home() {
 
   return (
     <div>
-      <Header />
-      <main>
-          <Filter
+      <Header  currentSearch={search}  onSearch={handleSearch} />
+        <Filter
         categories={categories}
         currentCategory={category}
         currentSortBy={sortBy}
         currentSortOrder={sortOrder}
-        currentSearch={search}
         onFilter={handleFilter}
         onSort={handleSort}
-        onSearch={handleSearch}
         onReset={handleReset}
       />
       {loading ? (
@@ -103,7 +100,6 @@ export default function Home() {
               <Footer/>
   </>
    )}
-  </main>
 </div>
 );
 }
