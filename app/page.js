@@ -6,7 +6,8 @@ import Products from './components/productCard'
 import Pagination from './components/pagination'
 import Filter from './components/filter'
 import Header from './components/header'
-import { fetchProducts,fetchCategories } from './api'
+import { fetchProducts, fetchCategories } from './api'
+import Footer from './components/footer'
 
 export default function Home() {
   const router = useRouter();
@@ -87,7 +88,8 @@ export default function Home() {
         <link rel="canonical" href="https://domain.com" />
       </Head>
 
-        <Header/>
+      <Header />
+      <main>
           <Filter
         categories={categories}
         currentCategory={category}
@@ -110,9 +112,11 @@ export default function Home() {
       totalPages={totalPages}
       hasMore={products.length === 20}
       onPageChange={handlePageChange}
-    />
+              />
+              <Footer/>
   </>
-)}
+   )}
+  </main>
 </div>
 );
 }
