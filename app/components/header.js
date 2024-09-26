@@ -5,7 +5,11 @@ import { useState, useEffect } from 'react';
 
 /**
  * Header component that displays the navigation bar with links to different pages.
- *
+ * 
+ * @param {Object} props - The properties object.
+ * @param {string} props.currentSearch - The current search term.
+ * @param {Function} props.onSearch - Callback function to handle search submission.
+ * 
  * @returns {JSX.Element} - The header component containing the website's logo and navigation links.
  */
 export default function Header({

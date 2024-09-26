@@ -1,8 +1,13 @@
-
 import { notFound } from 'next/navigation';
 import { ProductDetail } from '@/app/components/productDetail'; 
 import { fetchProductById } from '@/app/api';
 
+/**
+ * Generate SEO-friendly metadata for the product page.
+ * 
+ * @param {Object} params - The route parameters.
+ * @returns {Object} The metadata for the product page.
+ */
 export async function generateMetadata({ params }) {
   const product = await fetchProductById(params.id);
 
@@ -19,17 +24,31 @@ export async function generateMetadata({ params }) {
   };
 }
 
+/**
+ * Fetch product data by ID.
+ * 
+ * @param {string} id - The ID of the product.
+ * @returns {Promise<Object>} The product data.
+ */
 async function fetchProductData(id) {
   const product = await fetchProductById(id);
   if (!product) notFound();
   return product;
 }
 
+/**
+ * ProductPage component to display the product details.
+ * 
+ * @param {Object} props - The props object.
+ * @param {Object} props.params - The route parameters.
+ * @returns {JSX.Element} The rendered ProductDetail component.
+ */
 export default async function ProductPage({ params }) {
   const product = await fetchProductData(params.id);
 
   return <ProductDetail product={product} />;
 }
+
 
 
 

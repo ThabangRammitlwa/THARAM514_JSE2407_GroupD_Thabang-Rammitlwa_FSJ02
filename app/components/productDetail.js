@@ -1,157 +1,184 @@
-"use client"
+"use client";
 
 import { useState, useEffect } from 'react';
 import Reviews from './reviews';
 
-
-
+/**
+ * Navigate back to the previous page.
+ */
 function goBack() {
   window.history.back();
 }
 
+/**
+ * ProductDetail component to display detailed information about a specific product.
+ * 
+ * @param {Object} props - The properties object.
+ * @param {Object} props.product - The product object containing its details.
+ * 
+ * @returns {JSX.Element} The rendered ProductDetail component.
+ */
 export function ProductDetail({ product }) {
-    const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [loading, setLoading] = useState(true);
-  const [reviewSort, setReviewSort] = useState('date-desc')
+  const [reviewSort, setReviewSort] = useState('date-desc');
 
-    useEffect(() => {
-        if (product) {
-            setLoading(false);
-        }
-    }, [product]);
-  
-    const handlePrevImage = () => {
-      setCurrentImageIndex((prevIndex) =>
-        prevIndex === 0 ? product.images.length - 1 : prevIndex - 1
-      );
-    };
-  
-    const handleNextImage = () => {
-      setCurrentImageIndex((prevIndex) =>
-        prevIndex === product.images.length - 1 ? 0 : prevIndex + 1
-      );
-    };
-  
-    const handleImageClick = (index) => {
-      setCurrentImageIndex(index);
-    };
-  
-    const renderStars = (rating) => {
-      const stars = [];
-      for (let i = 0; i < 5; i++) {
-        if (i < rating) {
-          stars.push(<span key={i} className="text-yellow-500">&#9733;</span>); // Filled star
-        } else {
-          stars.push(<span key={i} className="text-gray-400">&#9733;</span>); // Empty star
-        }
-      }
-      return stars;
-    };
-
-    if (loading) {
-        return <div className='text-centre p-4'>Loading...</div>;
+  useEffect(() => {
+    if (product) {
+      setLoading(false);
     }
-  
-  
-    const sortedReviews = product.reviews.slice().sort((a, b) => {
-      switch (reviewSort) {
-        case 'date-desc':
-          return new Date(b.date) - new Date(a.date);
-        case 'date-asc':
-          return new Date(a.date) - new Date(b.date);
-        case 'rating-desc':
-          return b.rating - a.rating;
-        case 'rating-asc':
-          return a.rating - b.rating;
-        default:
-          return 0;
+  }, [product]);
+
+  /**
+   * Change to the previous image in the product gallery.
+   */
+  const handlePrevImage = () => {
+    setCurrentImageIndex((prevIndex) =>
+      prevIndex === 0 ? product.images.length - 1 : prevIndex - 1
+    );
+  };
+
+  /**
+   * Change to the next image in the product gallery.
+   */
+  const handleNextImage = () => {
+    setCurrentImageIndex((prevIndex) =>
+      prevIndex === product.images.length - 1 ? 0 : prevIndex + 1
+    );
+  };
+
+  /**
+   * Set the current image index when an image thumbnail is clicked.
+   * 
+   * @param {number} index - The index of the image to display.
+   */
+  const handleImageClick = (index) => {
+    setCurrentImageIndex(index);
+  };
+
+  /**
+   * Render star ratings based on the product's rating.
+   * 
+   * @param {number} rating - The rating of the product.
+   * @returns {JSX.Element[]} An array of JSX elements representing stars.
+   */
+  const renderStars = (rating) => {
+    const stars = [];
+    for (let i = 0; i < 5; i++) {
+      if (i < rating) {
+        stars.push(<span key={i} className="text-yellow-500">&#9733;</span>); // Filled star
+      } else {
+        stars.push(<span key={i} className="text-gray-400">&#9733;</span>); // Empty star
       }
-    });
-  
-    return (
-      <div className="py-12">
-        <div className="flex justify-center mb-8">
+    }
+    return stars;
+  };
+
+  if (loading) {
+    return <div className='text-centre p-4'>Loading...</div>;
+  }
+
+  const sortedReviews = product.reviews.slice().sort((a, b) => {
+    switch (reviewSort) {
+      case 'date-desc':
+        return new Date(b.date) - new Date(a.date);
+      case 'date-asc':
+        return new Date(a.date) - new Date(b.date);
+      case 'rating-desc':
+        return b.rating - a.rating;
+      case 'rating-asc':
+        return a.rating - b.rating;
+      default:
+        return 0;
+    }
+  });
+
+  return (
+    <div className="py-12">
+      <div className="flex justify-center mb-8">
         <button
-            onClick={goBack}
-            className="bg-amber-600 hover:bg-amber-700 text-white font-bold py-2 px-4 rounded-full transition-colors duration-300"
-          >
-            Back to list ←
-          </button>
-        </div>
-        <div className="bg-white rounded-lg shadow-lg overflow-hidden max-w-6xl mx-auto">
-          <div className="md:flex">
-            <div className="relative md:w-1/2">
-              <img
-                src={product.images[currentImageIndex]}
-                className="w-full object-cover"
-              />
-              {product.images.length > 1 && (
-                <>
-                  <button
-                    onClick={handlePrevImage}
-                    className="absolute top-1/2 left-0 transform -translate-y-1/2  text-amber-800 p-2 rounded-full hover:bg-amber-500 transition-colors duration-300"
-                  >
-                    &lt;
-                  </button>
-                  <button
-                    onClick={handleNextImage}
-                    className="absolute top-1/2 right-0 transform -translate-y-1/2  text-amber-800 p-2 rounded-full hover:bg-amber-500 transition-colors duration-300"
-                  >
-                    &gt;
-                  </button>
-                </>
-              )}
-              <div className="flex justify-center mt-4 space-x-2">
-                {product.images.map((image, index) => (
-                  <img
-                    key={index}
-                    src={image}
-                    className={`h-16 w-16 object-cover cursor-pointer ${currentImageIndex === index ? 'border-2 border-amber-600' : 'border'}`}
-                    onClick={() => handleImageClick(index)}
-                  />
-                ))}
-              </div>
-            </div>
-            <div className="md:w-1/2 p-8">
-              <h1 className="text-3xl font-bold mb-4 text-amber-800">
-                {product.title}
-              </h1>
-              <p className="text-2xl font-semibold text-amber-600 mb-4">
-                R{product.price.toFixed(2)}
-              </p>
-              <p className="text-gray-700 mb-6">{product.description}</p>
-              <p className="text-sm text-gray-600 mb-2">
-                Category: {product.category}
-              </p>
-              <div className="mb-4">
-                {product.tags.map((tag, index) => (
-                  <span
-                    key={index}
-                    className="inline-block bg-amber-100 rounded-full px-3 py-1 text-sm font-serif text-amber-800 mr-2 mb-2"
-                  >
-                    {tag}
-                  </span>
-                ))}
-              </div>
-              <p className="text-sm text-gray-600 mb-2">
-                Rating: {product.rating} / 5
-              </p>
-              <p className="text-sm text-gray-600 mb-4">
-                Stock: {product.stock}
-                {product.stock > 0 ? (
-                  <span className="text-green-600 ml-2">(In Stock)</span>
-                ) : (
-                  <span className="text-red-600 ml-2">(Out of Stock)</span>
-                )}
-              </p>
-              <button className="bg-amber-600 hover:bg-amber-700 text-white font-bold py-2 px-4 rounded-full transition-colors duration-300">
-                Add to Cart
-              </button>
+          onClick={goBack}
+          className="bg-amber-600 hover:bg-amber-700 text-white font-bold py-2 px-4 rounded-full transition-colors duration-300"
+        >
+          Back to list ←
+        </button>
+      </div>
+      <div className="bg-white rounded-lg shadow-lg overflow-hidden max-w-6xl mx-auto">
+        <div className="md:flex">
+          <div className="relative md:w-1/2">
+            <img
+              src={product.images[currentImageIndex]}
+              className="w-full object-cover"
+              alt={`Image of ${product.title}`}
+            />
+            {product.images.length > 1 && (
+              <>
+                <button
+                  onClick={handlePrevImage}
+                  className="absolute top-1/2 left-0 transform -translate-y-1/2 text-amber-800 p-2 rounded-full hover:bg-amber-500 transition-colors duration-300"
+                >
+                  &lt;
+                </button>
+                <button
+                  onClick={handleNextImage}
+                  className="absolute top-1/2 right-0 transform -translate-y-1/2 text-amber-800 p-2 rounded-full hover:bg-amber-500 transition-colors duration-300"
+                >
+                  &gt;
+                </button>
+              </>
+            )}
+            <div className="flex justify-center mt-4 space-x-2">
+              {product.images.map((image, index) => (
+                <img
+                  key={index}
+                  src={image}
+                  className={`h-16 w-16 object-cover cursor-pointer ${currentImageIndex === index ? 'border-2 border-amber-600' : 'border'}`}
+                  onClick={() => handleImageClick(index)}
+                  alt={`Thumbnail of ${product.title} image ${index + 1}`}
+                />
+              ))}
             </div>
           </div>
-          <div className="mt-8 p-8">
-            <h2 className="text-2xl font-bold mb-4 text-amber-800">Reviews</h2>
-            <select
+          <div className="md:w-1/2 p-8">
+            <h1 className="text-3xl font-bold mb-4 text-amber-800">
+              {product.title}
+            </h1>
+            <p className="text-2xl font-semibold text-amber-600 mb-4">
+              R{product.price.toFixed(2)}
+            </p>
+            <p className="text-gray-700 mb-6">{product.description}</p>
+            <p className="text-sm text-gray-600 mb-2">
+              Category: {product.category}
+            </p>
+            <div className="mb-4">
+              {product.tags.map((tag, index) => (
+                <span
+                  key={index}
+                  className="inline-block bg-amber-100 rounded-full px-3 py-1 text-sm font-serif text-amber-800 mr-2 mb-2"
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+            <p className="text-sm text-gray-600 mb-2">
+              Rating: {product.rating} / 5
+            </p>
+            <p className="text-sm text-gray-600 mb-4">
+              Stock: {product.stock}
+              {product.stock > 0 ? (
+                <span className="text-green-600 ml-2">(In Stock)</span>
+              ) : (
+                <span className="text-red-600 ml-2">(Out of Stock)</span>
+              )}
+            </p>
+            <button className="bg-amber-600 hover:bg-amber-700 text-white font-bold py-2 px-4 rounded-full transition-colors duration-300">
+              Add to Cart
+            </button>
+          </div>
+        </div>
+        <div className="mt-8 p-8">
+          <h2 className="text-2xl font-bold mb-4 text-amber-800">Reviews</h2>
+          <select
             value={reviewSort}
             onChange={(e) => setReviewSort(e.target.value)}
             className="p-2 border rounded-md shadow-sm focus:ring-amber-500 focus:border-amber-500 bg-white"
@@ -161,9 +188,9 @@ export function ProductDetail({ product }) {
             <option value="rating-desc">Highest Rating First</option>
             <option value="rating-asc">Lowest Rating First</option>
           </select>
-          </div>
-          <Reviews reviews={ sortedReviews} />
         </div>
+        <Reviews reviews={sortedReviews} />
       </div>
-    );
-  }
+    </div>
+  );
+}

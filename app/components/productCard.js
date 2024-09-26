@@ -3,13 +3,17 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 
-
-
-
+/**
+ * ProductCard component to display a grid of product cards.
+ * 
+ * @param {Object} props - The properties object.
+ * @param {Array} props.products - The array of product objects.
+ * 
+ * @returns {JSX.Element} The rendered ProductCard component.
+ */
 export default function ProductCard({ products }) {
   const [loading, setLoading] = useState(true);
   const [currentImages, setCurrentImages] = useState({});
-
 
   useEffect(() => {
     if (products.length > 0) {
@@ -22,7 +26,14 @@ export default function ProductCard({ products }) {
     }
   }, [products]);
 
-  const changeImage = ( e,productId, direction) => {
+  /**
+   * Change the current image being displayed for a product.
+   * 
+   * @param {Object} e - The event object.
+   * @param {string} productId - The ID of the product.
+   * @param {number} direction - The direction to change the image, 1 for next and -1 for previous.
+   */
+  const changeImage = (e, productId, direction) => {
     e.preventDefault();
     e.stopPropagation();
     setCurrentImages(prev => {
@@ -33,18 +44,17 @@ export default function ProductCard({ products }) {
     });
   };
 
-
   return (
-    <div className="container mx-auto px-2 sm:px-4 py-6 sm: py-10 bg-white">
+    <div className="container mx-auto px-2 sm:px-4 py-6 sm:py-10 bg-white">
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-        {products && products.map((item,index) => (
+        {products && products.map((item, index) => (
           <Link key={index} href={`/product/${item.id}?page={currentPage}`}>
             <div className="bg-white shadow-md rounded-lg overflow-hidden flex flex-col h-[300px] sm:h-[350px] md:h-[400px]">
               <div className="p-4">
                 <h2 className="text-xl font-bold font-sans text-amber-900 mb-2">{item.title}</h2>
                 <div className="relative aspect-w-1 aspect-h-1 h-32 sm:h-40 md:h-48">
                   <img
-                    src={item.images[currentImages[item.id]]} className="h-full object-contain w-full "
+                    src={item.images[currentImages[item.id]]} className="h-full object-contain w-full"
                     alt={`${item.title} - Image ${currentImages[item.id] + 1}`}
                   />
                   {item.images.length > 1 && (
@@ -55,7 +65,7 @@ export default function ProductCard({ products }) {
                       >
                         &lt;
                       </button>
-                  
+
                       <button
                         onClick={(e) => changeImage(e, item.id, 1)}
                         className="text-amber-900 bg-white bg-opacity-50 rounded-full p-1 hover:bg-opacity-75"
@@ -80,3 +90,4 @@ export default function ProductCard({ products }) {
     </div>
   );
 }
+

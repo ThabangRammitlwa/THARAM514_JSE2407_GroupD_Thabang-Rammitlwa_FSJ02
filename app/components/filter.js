@@ -1,7 +1,19 @@
-"use client"
 
-import { useState,useEffect } from "react"
 
+/**
+ * Filter component for filtering and sorting products.
+ * 
+ * @param {Object} props - The properties object.
+ * @param {Array<string>} props.categories - The list of categories to filter by.
+ * @param {string} props.currentCategory - The currently selected category.
+ * @param {string} props.currentSortBy - The current sorting criteria.
+ * @param {string} props.currentSortOrder - The current sorting order.
+ * @param {Function} props.onFilter - Callback function to handle filtering by category.
+ * @param {Function} props.onSort - Callback function to handle sorting.
+ * @param {Function} props.onReset - Callback function to reset filters and sorting.
+ * 
+ * @returns {JSX.Element} The rendered Filter component.
+ */
 export default function Filter({
     categories,
     currentCategory,
@@ -11,10 +23,7 @@ export default function Filter({
     onSort,
     onReset
 }) {
-  
-  
     return (
-  
         <div className="flex flex-wrap items-center gap-4 py-6 px-6 text-amber-800 font-serif">
           <select
             value={currentCategory}
@@ -43,4 +52,4 @@ export default function Filter({
           <button onClick={onReset} className="bg-amber-100 p-2 rounded">Reset All</button>
         </div>
     );
-  }
+}
