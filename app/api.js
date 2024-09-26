@@ -1,5 +1,8 @@
+import { cache } from 'react';
+
 const API_BASE_URL = 'https://next-ecommerce-api.vercel.app';
-export async function fetchProducts(params = {}) {
+
+export const fetchProducts = cache(async (params = {}) => {
   const {
     page = 1,
     limit = 20,
@@ -9,10 +12,7 @@ export async function fetchProducts(params = {}) {
     sortOrder = 'asc',
   } = params;
 
-  // Calculate skip value for pagination
   const skip = (page - 1) * limit;
-
-  // Create query parameters
   const queryParams = new URLSearchParams({
     limit: limit.toString(),
     skip: skip.toString(),
@@ -22,34 +22,42 @@ export async function fetchProducts(params = {}) {
     sortOrder,
   });
 
-  // Make the API request with query parameters
-  const response = await fetch(`${API_BASE_URL}/products?${queryParams}`);
-  
+  const response = await fetch(`${API_BASE_URL}/products?${queryParams}`, {
+    next: { revalidate: 60 }, 
+  });
+
   if (!response.ok) {
     throw new Error('Failed to fetch products');
   }
 
-  // Parse and return the response data
   const data = await response.json();
   return {
     products: data || [],
     totalPages: data.totalPages || 1,
     totalProducts: data.totalProducts || 0,
   };
-}
+});
 
-export async function fetchProductById(id) {
-  const response = await fetch(`${API_BASE_URL}/products/${id}`);
+export const fetchProductById = cache(async (id) => {
+  const response = await fetch(`${API_BASE_URL}/products/${id}`, {
+    next: { revalidate: 3600 },
+  });
+
   if (!response.ok) {
     throw new Error('Failed to fetch product');
   }
+
   return response.json();
-}
-  
-export async function fetchCategories() {
-  const response = await fetch(`${API_BASE_URL}/categories`);
+});
+
+export const fetchCategories = cache(async () => {
+  const response = await fetch(`${API_BASE_URL}/categories`, {
+    next: { revalidate: 86400 }, 
+  });
+
   if (!response.ok) {
-    throw new Error('Failed to fetch product');
+    throw new Error('Failed to fetch categories');
   }
+
   return response.json();
-}
+});

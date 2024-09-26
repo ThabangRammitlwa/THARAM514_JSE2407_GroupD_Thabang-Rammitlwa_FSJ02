@@ -75,19 +75,6 @@ export default function Home() {
 
   return (
     <div>
-        <Head>
-        <title>Our Family Store | Great Products, Great Prices</title>
-        <meta name="description" content="Discover our wide range of products at competitive prices. Shop now for the best deals on electronics, fashion, home goods, and more." />
-        <meta name="keywords" content="e-commerce, online shopping, products, deals, electronics, fashion, home goods" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <meta property="og:title" content="Our E-commerce Store | Great Products, Great Prices" />
-        <meta property="og:description" content="Discover our wide range of products at competitive prices. Shop now for the best deals on electronics, fashion, home goods, and more." />
-        <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://domain.com" />
-        <meta property="og:image" content="https://domain.com/og-image.jpg" />
-        <link rel="canonical" href="https://domain.com" />
-      </Head>
-
       <Header />
       <main>
           <Filter

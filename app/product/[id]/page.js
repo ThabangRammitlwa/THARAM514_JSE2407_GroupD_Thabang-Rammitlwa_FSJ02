@@ -1,27 +1,37 @@
 
-import { ProductDetail } from '../../components/productDetail';
-import { fetchProductById } from '../../api';
+import { notFound } from 'next/navigation';
+import { ProductDetail } from '@/app/components/productDetail'; 
+import { fetchProductById } from '@/app/api';
 
+export async function generateMetadata({ params }) {
+  const product = await fetchProductById(params.id);
 
+  if (!product) {
+    return {
+      title: 'Product Not Found',
+      description: 'The requested product could not be found.',
+    };
+  }
 
+  return {
+    title: `${product.title} | Family Store`,
+    description: product.description,
+  };
+}
+
+async function fetchProductData(id) {
+  const product = await fetchProductById(id);
+  if (!product) notFound();
+  return product;
+}
 
 export default async function ProductPage({ params }) {
-  const { id } = params;
-  let product;
-  let error;
-
-  try {
-    product = await fetchProductById(id);
-  } catch (err) {
-    error = err.message;
-  }
-
-  if (error) {
-    return <div className="text-red-500 text-center p-4">Error: {error}</div>;
-  }
+  const product = await fetchProductData(params.id);
 
   return <ProductDetail product={product} />;
 }
+
+
 
 
 
