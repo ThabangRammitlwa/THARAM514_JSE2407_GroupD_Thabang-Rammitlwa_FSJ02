@@ -100,7 +100,7 @@ export default function Home() {
         onReset={handleReset}
       />
       {loading ? (
-        <div className="text-center p-4">Loading...</div>
+        <div className="text-center font-bold text-amber-800 p-8">Loading...</div>
       ) : (
           <>
     

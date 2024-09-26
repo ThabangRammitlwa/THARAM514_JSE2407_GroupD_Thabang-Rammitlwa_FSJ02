@@ -3,6 +3,8 @@ import { ProductDetail } from '../../components/productDetail';
 import { fetchProductById } from '../../api';
 
 
+
+
 export default async function ProductPage({ params }) {
   const { id } = params;
   let product;
